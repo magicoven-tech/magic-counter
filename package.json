@@ -1,0 +1,11 @@
+{
+  "name": "frame_counter",
+  "version": "1.0.0",
+  "description": "a simple frame count",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "bruno nepomuceno",
+  "license": "MIT"
+}

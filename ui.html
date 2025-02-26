@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Magic Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, button, .radio-group {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 10px;
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+      height: 300px; /* Altura maior para a div de resultados */
+    }
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .radio-group label {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <label for="name">Nome do Frame:</label>
+  <input type="text" id="name" placeholder="Digite o nome do Frame">
+  <label for="width">Largura:</label>
+  <input type="number" id="width" placeholder="Digite a largura">
+  <label for="height">Altura:</label>
+  <input type="number" id="height" placeholder="Digite a altura">
+  <div class="radio-group">
+    <label><input type="radio" name="searchType" value="both" checked> Largura e Altura</label>
+    <label><input type="radio" name="searchType" value="width"> Apenas Largura</label>
+    <label><input type="radio" name="searchType" value="height"> Apenas Altura</label>
+    <label><input type="radio" name="searchType" value="name"> Apenas Nome</label>
+  </div>
+  <div class="radio-group">
+    <label><input type="radio" name="searchScope" value="current" checked> Página Atual</label>
+    <label><input type="radio" name="searchScope" value="all"> Todas as Páginas</label>
+  </div>
+  <button id="count">Contar Frames</button>
+  <button id="clear" style="background-color: #6c757d;">Limpar Campos</button>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('count').onclick = () => {
+      const width = parseInt(document.getElementById('width').value, 10);
+      const height = parseInt(document.getElementById('height').value, 10);
+      const name = document.getElementById('name').value.trim();
+      const searchType = document.querySelector('input[name="searchType"]:checked').value;
+      const searchScope = document.querySelector('input[name="searchScope"]:checked').value;
+      parent.postMessage({ pluginMessage: { type: 'count-frames', width, height, name, searchType, searchScope } }, '*');
+    };
+
+    document.getElementById('clear').onclick = () => {
+      document.getElementById('width').value = '';
+      document.getElementById('height').value = '';
+      document.getElementById('name').value = '';
+      document.querySelector('input[name="searchType"][value="both"]').checked = true;
+      document.querySelector('input[name="searchScope"][value="current"]').checked = true;
+      document.getElementById('result').innerText = '';
+    };
+
+    window.onmessage = (event) => {
+      if (event.data.pluginMessage.type === 'result') {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `<strong>Frames Encontrados:</strong><br>${event.data.pluginMessage.frames.join('<br>')}`;
+      }
+    };
+  </script>
+</body>
+</html>
