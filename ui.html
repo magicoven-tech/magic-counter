@@ -3,97 +3,222 @@
 <head>
   <title>Magic Counter</title>
   <style>
+    /* Reset básico */
     body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 16px;
       margin: 0;
       height: 100%;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
+      background-color: #f5f5f7; /* Cor de fundo suave */
+      color: #1c1c1e; /* Cor de texto escuro */
     }
+
+    /* Estilo das labels */
     label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px; /* Espaço entre as labels e os inputs */
+      font-weight: bold; /* Labels em negrito */
     }
-    input, button, .radio-group {
+
+    /* Estilo dos inputs */
+    input {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 24px; /* Espaço entre os inputs e os chips */
       box-sizing: border-box;
+      border: 1px solid #d1d1d6;
+      border-radius: 10px; /* Bordas arredondadas */
+      font-size: 16px;
+      background-color: #ffffff; /* Fundo branco */
+      color: #1c1c1e;
+      transition: border-color 0.2s ease;
     }
-    button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
+
+    input:focus {
+      border-color: #007AFF; /* Azul do iOS */
+      outline: none;
+    }
+
+    /* Container para inputs de largura e altura */
+    .input-group {
+      display: flex;
+      gap: 16px; /* Espaço entre os inputs */
+      margin-bottom: 24px; /* Espaço entre os inputs e os chips */
+    }
+
+    .input-group input {
+      flex: 1; /* Faz os inputs ocuparem o espaço disponível */
+      margin-bottom: 0; /* Remove a margem inferior */
+    }
+
+    /* Estilo dos chips */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px; /* Espaço entre os chips e os botões */
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border: 1px solid #d1d1d6;
+      border-radius: 20px; /* Bordas arredondadas */
+      font-size: 14px;
+      color: #1c1c1e;
+      background-color: #ffffff;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
-    button:hover {
-      background-color: #0056b3;
+
+    .chip.selected {
+      background-color: #007AFF; /* Azul do iOS */
+      color: #ffffff;
+      border-color: #007AFF;
     }
+
+    /* Estilo da div de resultados */
     #result {
-      margin-top: 10px;
       flex-grow: 1;
       overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      background-color: #f9f9f9;
-      height: 300px; /* Altura maior para a div de resultados */
+      border: 1px solid #d1d1d6;
+      border-radius: 10px; /* Bordas arredondadas */
+      padding: 16px;
+      background-color: #ffffff; /* Fundo branco */
+      font-size: 16px;
+      color: #1c1c1e;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+      margin-bottom: 16px; /* Espaço entre os resultados e os botões */
     }
-    .radio-group {
+
+    #result strong {
+      font-weight: 600;
+    }
+
+    /* Container para os botões */
+    .button-group {
       display: flex;
-      gap: 10px;
-      align-items: center;
+      gap: 16px; /* Espaço entre os botões */
+      margin-top: 12px; /* Espaço acima dos botões */
     }
-    .radio-group label {
-      margin: 0;
+
+    /* Estilo dos botões */
+    button {
+      flex: 1; /* Faz os botões ocuparem o espaço disponível */
+      padding: 12px;
+      border: none;
+      border-radius: 10px; /* Bordas arredondadas */
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #count {
+      background-color: #007AFF; /* Azul do iOS */
+      color: #ffffff;
+    }
+
+    #count:hover {
+      background-color: #0063cc; /* Azul mais escuro no hover */
+    }
+
+    #clear {
+      background-color: #e5e5ea; /* Cinza claro */
+      color: #1c1c1e;
+    }
+
+    #clear:hover {
+      background-color: #d1d1d6; /* Cinza mais escuro no hover */
     }
   </style>
 </head>
 <body>
-  <label for="name">Nome do Frame:</label>
-  <input type="text" id="name" placeholder="Digite o nome do Frame">
-  <label for="width">Largura:</label>
-  <input type="number" id="width" placeholder="Digite a largura">
-  <label for="height">Altura:</label>
-  <input type="number" id="height" placeholder="Digite a altura">
-  <div class="radio-group">
-    <label><input type="radio" name="searchType" value="both" checked> Largura e Altura</label>
-    <label><input type="radio" name="searchType" value="width"> Apenas Largura</label>
-    <label><input type="radio" name="searchType" value="height"> Apenas Altura</label>
-    <label><input type="radio" name="searchType" value="name"> Apenas Nome</label>
+  <label for="name">Nome do frame</label>
+  <input type="text" id="name" placeholder="Digite o nome do frame">
+
+  <div class="input-group">
+    <div style="flex: 1;">
+      <label for="width">Largura</label>
+      <input type="number" id="width" placeholder="Digite a largura">
+    </div>
+    <div style="flex: 1;">
+      <label for="height">Altura</label>
+      <input type="number" id="height" placeholder="Digite a altura">
+    </div>
   </div>
-  <div class="radio-group">
-    <label><input type="radio" name="searchScope" value="current" checked> Página Atual</label>
-    <label><input type="radio" name="searchScope" value="all"> Todas as Páginas</label>
+
+  <div class="chip-group" id="searchTypeGroup">
+    <div class="chip" data-value="both">Largura e altura</div>
+    <div class="chip" data-value="width">Apenas largura</div>
+    <div class="chip" data-value="height">Apenas altura</div>
+    <div class="chip" data-value="name">Apenas nome</div>
   </div>
-  <button id="count">Contar Frames</button>
-  <button id="clear" style="background-color: #6c757d;">Limpar Campos</button>
+
+  <div class="chip-group" id="searchScopeGroup">
+    <div class="chip" data-value="current">Página atual</div>
+    <div class="chip" data-value="all">Todas as páginas</div>
+  </div>
+
+  <label for="result">Resultado</label> <!-- Label "Resultado" sem ":" -->
   <div id="result"></div>
 
+  <div class="button-group">
+    <button id="clear">Limpar campos</button>
+    <button id="count">Contar frames</button>
+  </div>
+
   <script>
+    // Função para gerenciar a seleção dos chips
+    function handleChipSelection(chipGroup, selectedChip) {
+      const chips = chipGroup.querySelectorAll('.chip');
+      chips.forEach(chip => chip.classList.remove('selected'));
+      selectedChip.classList.add('selected');
+    }
+
+    // Adiciona eventos aos chips de tipo de busca
+    const searchTypeGroup = document.getElementById('searchTypeGroup');
+    searchTypeGroup.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => handleChipSelection(searchTypeGroup, chip));
+    });
+
+    // Adiciona eventos aos chips de escopo de busca
+    const searchScopeGroup = document.getElementById('searchScopeGroup');
+    searchScopeGroup.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => handleChipSelection(searchScopeGroup, chip));
+    });
+
+    // Lógica do botão "Contar Frames"
     document.getElementById('count').onclick = () => {
       const width = parseInt(document.getElementById('width').value, 10);
       const height = parseInt(document.getElementById('height').value, 10);
       const name = document.getElementById('name').value.trim();
-      const searchType = document.querySelector('input[name="searchType"]:checked').value;
-      const searchScope = document.querySelector('input[name="searchScope"]:checked').value;
+      const searchType = searchTypeGroup.querySelector('.chip.selected').dataset.value;
+      const searchScope = searchScopeGroup.querySelector('.chip.selected').dataset.value;
       parent.postMessage({ pluginMessage: { type: 'count-frames', width, height, name, searchType, searchScope } }, '*');
     };
 
+    // Lógica do botão "Limpar Campos"
     document.getElementById('clear').onclick = () => {
       document.getElementById('width').value = '';
       document.getElementById('height').value = '';
       document.getElementById('name').value = '';
-      document.querySelector('input[name="searchType"][value="both"]').checked = true;
-      document.querySelector('input[name="searchScope"][value="current"]').checked = true;
+      searchTypeGroup.querySelector('.chip').click(); // Seleciona o primeiro chip por padrão
+      searchScopeGroup.querySelector('.chip').click(); // Seleciona o primeiro chip por padrão
       document.getElementById('result').innerText = '';
     };
 
+    // Recebe mensagens do Figma
     window.onmessage = (event) => {
       if (event.data.pluginMessage.type === 'result') {
         const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = `<strong>Frames Encontrados:</strong><br>${event.data.pluginMessage.frames.join('<br>')}`;
+        const frames = event.data.pluginMessage.frames;
+        const count = frames.length;
+        resultDiv.innerHTML = `<strong>Frames encontrados | ${count}</strong><br><br>${frames.join('<br>')}`;
       }
     };
   </script>
