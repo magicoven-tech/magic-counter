@@ -1,8 +1,10 @@
 {
     "name": "Magic counter by Magic Oven",
-    "id": "your-plugin-id",
+    "id": "1477698005446351535",
     "api": "1.0.0",
     "main": "code.js",
     "ui": "ui.html",
-    "editorType": [ "figma" ]
+    "editorType": [ "figma" ],
+    "networkAccess": { "allowedDomains": ["none"] },
+    "documentAccess": "dynamic-page"
   }
