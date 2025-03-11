@@ -180,25 +180,58 @@
       selectedChip.classList.add('selected');
     }
 
+    // Seleciona os chips padrão ao carregar o plugin
+    function selectDefaultChips() {
+      const searchTypeGroup = document.getElementById('searchTypeGroup');
+      const searchScopeGroup = document.getElementById('searchScopeGroup');
+
+      // Seleciona o chip "Largura e Altura"
+      const widthHeightChip = searchTypeGroup?.querySelector('.chip[data-value="both"]');
+      if (widthHeightChip) {
+        handleChipSelection(searchTypeGroup, widthHeightChip);
+      }
+
+      // Seleciona o chip "Página Atual"
+      const currentPageChip = searchScopeGroup?.querySelector('.chip[data-value="current"]');
+      if (currentPageChip) {
+        handleChipSelection(searchScopeGroup, currentPageChip);
+      }
+    }
+
     // Adiciona eventos aos chips de tipo de busca
     const searchTypeGroup = document.getElementById('searchTypeGroup');
-    searchTypeGroup.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => handleChipSelection(searchTypeGroup, chip));
-    });
+    if (searchTypeGroup) {
+      searchTypeGroup.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => handleChipSelection(searchTypeGroup, chip));
+      });
+    }
 
     // Adiciona eventos aos chips de escopo de busca
     const searchScopeGroup = document.getElementById('searchScopeGroup');
-    searchScopeGroup.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => handleChipSelection(searchScopeGroup, chip));
-    });
+    if (searchScopeGroup) {
+      searchScopeGroup.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => handleChipSelection(searchScopeGroup, chip));
+      });
+    }
 
     // Lógica do botão "Contar Frames"
     document.getElementById('count').onclick = () => {
       const width = parseInt(document.getElementById('width').value, 10);
       const height = parseInt(document.getElementById('height').value, 10);
       const name = document.getElementById('name').value.trim();
-      const searchType = searchTypeGroup.querySelector('.chip.selected').dataset.value;
-      const searchScope = searchScopeGroup.querySelector('.chip.selected').dataset.value;
+
+      // Verifica se os chips estão selecionados
+      const searchTypeChip = searchTypeGroup?.querySelector('.chip.selected');
+      const searchScopeChip = searchScopeGroup?.querySelector('.chip.selected');
+
+      if (!searchTypeChip || !searchScopeChip) {
+        alert('Por favor, selecione um tipo de busca e um escopo.');
+        return;
+      }
+
+      const searchType = searchTypeChip.dataset.value;
+      const searchScope = searchScopeChip.dataset.value;
+
       parent.postMessage({ pluginMessage: { type: 'count-frames', width, height, name, searchType, searchScope } }, '*');
     };
 
@@ -207,8 +240,7 @@
       document.getElementById('width').value = '';
       document.getElementById('height').value = '';
       document.getElementById('name').value = '';
-      searchTypeGroup.querySelector('.chip').click(); // Seleciona o primeiro chip por padrão
-      searchScopeGroup.querySelector('.chip').click(); // Seleciona o primeiro chip por padrão
+      selectDefaultChips(); // Reseta os chips para os valores padrão
       document.getElementById('result').innerText = '';
     };
 
@@ -221,6 +253,9 @@
         resultDiv.innerHTML = `<strong>Frames encontrados | ${count}</strong><br><br>${frames.join('<br>')}`;
       }
     };
+
+    // Seleciona os chips padrão ao carregar o plugin
+    selectDefaultChips();
   </script>
 </body>
 </html>

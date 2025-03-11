@@ -1,6 +1,6 @@
 figma.showUI(__html__, { width: 580, height: 600 });
 
-figma.ui.onmessage = (message) => {
+figma.ui.onmessage = async (message) => {
   if (message.type === 'count-frames') {
     const { width, height, name, searchType, searchScope } = message;
     const frames = [];
@@ -13,14 +13,18 @@ figma.ui.onmessage = (message) => {
       return nameMatch && widthMatch && heightMatch;
     };
 
+    // Carrega todas as páginas se o escopo for "todas as páginas"
+    if (searchScope === 'all') {
+      await figma.loadAllPagesAsync(); // Carrega todas as páginas
+    }
+
     // Escopo da busca
     const pages = searchScope === 'all' ? figma.root.children : [figma.currentPage];
 
     // Percorre as páginas selecionadas
     pages.forEach(page => {
-      page.findAll(node => node.type === 'FRAME' && isMatch(node)).forEach(frame => {
-        frames.push(frame.name);
-      });
+      const matchedFrames = page.findAll(node => node.type === 'FRAME' && isMatch(node));
+      matchedFrames.forEach(frame => frames.push(frame.name));
     });
 
     // Envia o resultado para a UI
