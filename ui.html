@@ -135,6 +135,39 @@
     #clear:hover {
       background-color: #d1d1d6; /* Cinza mais escuro no hover */
     }
+        /* Estilo do ícone de loading */
+    .loading {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Esconde o ícone de loading por padrão */
+    .loading {
+      display: none;
+    }
+
+    /* Classe para mostrar o loading e esconder o texto */
+    .button-loading .button-text {
+      display: none;
+    }
+
+    .button-loading .loading {
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -168,8 +201,11 @@
   <div id="result"></div>
 
   <div class="button-group">
-    <button id="clear">Limpar campos</button>
-    <button id="count">Contar frames</button>
+    <button id="clear">Limpar Campos</button>
+    <button id="count">
+      <span class="button-text">Contar Frames</span>
+      <span class="loading"></span>
+    </button>
   </div>
 
   <script>
@@ -215,7 +251,10 @@
     }
 
     // Lógica do botão "Contar Frames"
-    document.getElementById('count').onclick = () => {
+    document.getElementById('count').onclick = async () => {
+      const countButton = document.getElementById('count');
+      countButton.classList.add('button-loading'); // Ativa o loading
+
       const width = parseInt(document.getElementById('width').value, 10);
       const height = parseInt(document.getElementById('height').value, 10);
       const name = document.getElementById('name').value.trim();
@@ -226,12 +265,14 @@
 
       if (!searchTypeChip || !searchScopeChip) {
         alert('Por favor, selecione um tipo de busca e um escopo.');
+        countButton.classList.remove('button-loading'); // Desativa o loading
         return;
       }
 
       const searchType = searchTypeChip.dataset.value;
       const searchScope = searchScopeChip.dataset.value;
 
+      // Envia a mensagem para o Figma
       parent.postMessage({ pluginMessage: { type: 'count-frames', width, height, name, searchType, searchScope } }, '*');
     };
 
@@ -251,6 +292,10 @@
         const frames = event.data.pluginMessage.frames;
         const count = frames.length;
         resultDiv.innerHTML = `<strong>Frames encontrados | ${count}</strong><br><br>${frames.join('<br>')}`;
+
+        // Desativa o loading
+        const countButton = document.getElementById('count');
+        countButton.classList.remove('button-loading');
       }
     };
 
